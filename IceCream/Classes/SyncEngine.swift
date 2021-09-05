@@ -85,6 +85,7 @@ extension SyncEngine {
 
 public enum Notifications: String, NotificationName {
     case cloudKitDataDidChangeRemotely
+    case cloudKitRecordDidStoreLocally
 }
 
 public enum IceCreamKey: String {

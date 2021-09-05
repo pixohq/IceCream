@@ -107,6 +107,7 @@ extension SyncObject: Syncable {
             } else {
                 try! realm.commitWrite()
             }
+            NotificationCenter.default.post(name: Notifications.cloudKitRecordDidStoreLocally.name, object: object)
         }
     }
     
