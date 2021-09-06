@@ -43,14 +43,18 @@ public final class SyncEngine {
             case .available:
                 self.databaseManager.registerLocalDatabase()
                 self.databaseManager.createCustomZonesIfAllowed()
-                self.databaseManager.fetchChangesInDatabase(nil)
+                self.databaseManager.fetchChangesInDatabase {
+                  NotificationCenter.default.post(name: Notifications.cloudKitInitialFetchRecordZoneChangesCompletion.name, object: $0)
+                }
                 self.databaseManager.resumeLongLivedOperationIfPossible()
                 self.databaseManager.startObservingRemoteChanges()
                 self.databaseManager.startObservingTermination()
                 self.databaseManager.createDatabaseSubscriptionIfHaveNot()
             case .noAccount, .restricted:
                 guard self.databaseManager is PublicDatabaseManager else { break }
-                self.databaseManager.fetchChangesInDatabase(nil)
+                self.databaseManager.fetchChangesInDatabase {
+                  NotificationCenter.default.post(name: Notifications.cloudKitInitialFetchRecordZoneChangesCompletion.name, object: $0)
+                }
                 self.databaseManager.resumeLongLivedOperationIfPossible()
                 self.databaseManager.startObservingRemoteChanges()
                 self.databaseManager.startObservingTermination()
@@ -86,6 +90,7 @@ extension SyncEngine {
 public enum Notifications: String, NotificationName {
     case cloudKitDataDidChangeRemotely
     case cloudKitRecordDidStoreLocally
+    case cloudKitInitialFetchRecordZoneChangesCompletion
 }
 
 public enum IceCreamKey: String {
